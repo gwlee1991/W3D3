@@ -23,6 +23,25 @@ class ShortenedUrl < ActiveRecord::Base
     ShortenedUrl.new(user_id: user.id, long_url: long_url, short_url: short_url)
   end
 
+  def num_clicks
+    visits.length
+  end
+
+  def num_uniques
+    visitors.uniq.length
+  end
+
+  def num_recent_uniques
+    recent = []
+    visits.each do |visit|
+      if visit.created_at >= Time.now - 10.minutes
+        recent << visit
+      end
+    end
+
+    recent.uniq.length
+  end
+
   belongs_to :submitter,
     primary_key: :id,
     foreign_key: :user_id,
@@ -33,7 +52,7 @@ class ShortenedUrl < ActiveRecord::Base
     foreign_key: :s_url_id,
     class_name: :Visit
 
-  has_many :vistors,
+  has_many :visitors,
     through: :visits,
     source: :user
 

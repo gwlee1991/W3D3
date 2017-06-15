@@ -1,0 +1,31 @@
+puts "Input your e-mail:"
+email = gets.chomp
+if User.all.map{|user| user.email}.include?(email)
+  user = User.all.select{|user|user.email == email}.first
+else
+  user = User.create(email: email)
+end
+p user
+puts "What do you want to do?"
+puts "0. Created shortened URL"
+puts "1. Visit shortened URL"
+decision = gets.chomp
+
+if decision.to_i == 0
+  puts "Type in your long url"
+  long_url = gets.chomp
+  s_url = ShortenedUrl.create!(user, long_url)
+  s_url.save
+  puts "Short url is: " + s_url.short_url
+else
+  puts "Type in your shortened URL"
+  user_input = gets.chomp
+  s_url = ShortenedUrl.all.select{|surl| surl.short_url == user_input}
+  p s_url
+  unless s_url.empty?
+
+    "launch s_url.first.long_url"
+  end
+end
+
+puts "Goodbye!"
